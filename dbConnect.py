@@ -2,7 +2,6 @@ import psycopg2
 
 def connect():
     """ Connect to the PostgreSQL database server """
-    conn = None
     try:
         # Connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
@@ -14,9 +13,6 @@ def connect():
             password="abv317ij"
         )
 
-        # Cretate all needed tables
-        
-		
 	    # Return cur
         return conn
     except (Exception, psycopg2.DatabaseError) as error:
