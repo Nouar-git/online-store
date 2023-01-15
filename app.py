@@ -1,3 +1,4 @@
+import admin
 import customer
 
 while 1:
@@ -10,8 +11,7 @@ while 1:
     print("2.Customer")
     ch = int(input("Enter your choice (1 or 2): "))
     if ch == 1:
-        print("*"*40)
-        print('TODO fix Admin function .....')
+        admin.start()
     elif ch == 2:
         customer.start()
     else:

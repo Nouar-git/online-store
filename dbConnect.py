@@ -4,7 +4,6 @@ def connect():
     """ Connect to the PostgreSQL database server """
     try:
         # Connect to the PostgreSQL server
-        print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(
             host="pgserver.mau.se",
             port="5432",
