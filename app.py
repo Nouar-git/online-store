@@ -1,5 +1,9 @@
+import tables
 import admin
 import customer
+
+# Start with creating all tables nedded for the application.
+tables.createTables()
 
 while 1:
     print("\n")

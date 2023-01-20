@@ -1,47 +1,5 @@
 import dbConnect as db
-
-try:
-    # Connect to DB
-    conn = db.connect()
-    # Create a cursor
-    cur = db.cursor(conn)
-
-    # Create Admin tables if not exists.
-    tables = (
-        """
-        CREATE TABLE IF NOT EXISTS supplier (
-            id SERIAL UNIQUE PRIMARY KEY,
-            name VARCHAR ( 50 ) NOT NULL,
-            phonenumber INT NOT NULL,
-            address VARCHAR (200) NOT NULL,
-            postnr INT NOT NULL,
-            city VARCHAR (50),
-            country VARCHAR (50)
-        )
-        """,
-        """
-        CREATE TABLE IF NOT EXISTS product (
-            p_code SERIAL UNIQUE PRIMARY KEY,
-            p_name VARCHAR (55) NOT NULL,
-            p_quantity INT,
-            p_basePrice INT,
-            p_supplier VARCHAR (55) NOT NULL
-        )
-        """,
-    )
-    
-    for table in tables:
-        cur.execute(table)
-
-    # close communication with the PostgreSQL database server
-    cur.close()
-    # commit the changes
-    conn.commit()
-    conn.close()
-except (Exception, db.psycopg2.DatabaseError) as error:
-    print("*"*40)
-    print("--- !!! Error on Admin file !!! ---")
-    print(error)
+import product
 
 def start():
     while 1:
@@ -63,7 +21,11 @@ def start():
             addSupplier()
         elif ch == 2:
             print("*"*40)
-            addProduct()
+            product.addProduct()
+        elif ch == 5:
+            product.getList()
+        elif ch == 6:
+            product.searchProduct()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")
@@ -97,37 +59,3 @@ def addSupplier ():
         print("*"*40)
         print("--- !!! Failed to add new supplier !!! ---")
         print(error)
-
-def addProduct():
-    print("*"*40)
-    print("Add Product")
-    print("*"*40)
-    
-    p_name = input('Product name: ')
-    p_quantity = input('Quantity: ')
-    p_basePrice = input('Base price: ')
-    p_supplier = str(input('Supplier: '))
-
-    try:
-        conn = db.connect()
-        cur = db.cursor(conn)
-
-        print("Add Product ...")
-        cur.execute("""
-            INSERT INTO product (p_name, p_quantity, p_basePrice, p_supplier)
-            VALUES (%s, %s, %s, %s);
-            """,
-            (str(p_name), int(p_quantity), int(p_basePrice), p_supplier)
-        )
-        cur.close()
-        conn.commit()
-        print("New product is added.")
-    except (Exception, db.psycopg2.DatabaseError) as error:
-        print("*"*40)
-        print("--- !!! Failed to add a product !!! ---")
-        print(error)
-
-    
-    
-
-    

@@ -1,34 +1,5 @@
 import dbConnect as db
 
-try:
-    # Connect to DB
-    conn = db.connect()
-    # Create a cursor
-    cur = db.cursor(conn)
-
-    # Create Customer table if not exists
-    q = """
-        CREATE TABLE IF NOT EXISTS Customer (
-            customer_id serial PRIMARY KEY,
-            fname VARCHAR ( 50 ) NOT NULL,
-            lname VARCHAR ( 50 ) NOT NULL,
-            email VARCHAR (100) UNIQUE NOT NULL,
-            address VARCHAR (200) NOT NULL,
-            city VARCHAR (50) NOT NULL,
-            country VARCHAR (50) NOT NULL,
-            phonenumber INT NOT NULL
-        )
-        """
-
-    cur.execute(q)
-    cur.close()
-    conn.commit()
-    conn.close()
-except (Exception, db.psycopg2.DatabaseError) as error:
-    print("*"*40)
-    print("--- !!! Error on customer file !!! ---")
-    print(error)
-
 def start():
     while 1:
         print("\n")
