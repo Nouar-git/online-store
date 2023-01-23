@@ -22,6 +22,8 @@ def start():
         elif ch == 2:
             print("*"*40)
             product.addProduct()
+        elif ch == 4:
+            product.deleteProduct()
         elif ch == 5:
             product.getList()
         elif ch == 6:

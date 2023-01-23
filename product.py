@@ -97,3 +97,26 @@ def searchProduct():
         print("*"*40)
         print("--- !!! Failed to search !!! ---")
         print(error)
+    
+def deleteProduct():
+    print("\n")
+    print("*"*40)
+    print("Delete a product!")
+    print("*"*40)
+
+    pId = int(input("Set product code/Id: "))
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute(f"DELETE FROM product WHERE p_code = {pId}")
+
+        cur.close()
+        conn.commit()
+        print("product is deleted.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to delete the product !!! ---")
+        print(error)
+        
