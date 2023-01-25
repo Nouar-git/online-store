@@ -11,7 +11,7 @@ def createTables():
         tables = (
             """
             CREATE TABLE IF NOT EXISTS Customer (
-                customer_id serial PRIMARY KEY,
+                customer_id SERIAL PRIMARY KEY,
                 fname VARCHAR ( 50 ) NOT NULL,
                 lname VARCHAR ( 50 ) NOT NULL,
                 email VARCHAR (100) UNIQUE NOT NULL,
@@ -23,8 +23,7 @@ def createTables():
             """,
             """
             CREATE TABLE IF NOT EXISTS supplier (
-                id SERIAL UNIQUE PRIMARY KEY,
-                name VARCHAR ( 50 ) NOT NULL,
+                name VARCHAR ( 50 ) UNIQUE PRIMARY KEY,
                 phonenumber INT NOT NULL,
                 address VARCHAR (200) NOT NULL,
                 postnr INT NOT NULL,
@@ -33,12 +32,24 @@ def createTables():
             )
             """,
             """
+            CREATE TABLE discount(
+                d_id SERIAL INT UNIQUE PRIMARY KEY,
+                d_precent INT NOT NULL,
+                d_name VARCHAR (55) NOT NULL,
+                d_startDate INT NOT NULL,
+                d_endDate INT NOT NULL
+            )
+            """,
+            """
             CREATE TABLE IF NOT EXISTS product (
-                p_code SERIAL UNIQUE PRIMARY KEY,
+                p_id SERIAL UNIQUE PRIMARY KEY,
                 p_name VARCHAR (55) NOT NULL,
                 p_quantity INT,
                 p_basePrice INT,
-                p_supplier VARCHAR (55) NOT NULL
+                p_supplier VARCHAR NOT NULL,
+                p_discount INT,
+                FOREIGN KEY (p_supplier) REFERENCES supplier (name),
+                FOREIGN KEY (p_discount) REFERENCES discount (d_id)
             )
             """,
         )

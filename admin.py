@@ -1,5 +1,6 @@
 import dbConnect as db
 import product
+import dicounts
 
 def start():
     while 1:
@@ -22,12 +23,16 @@ def start():
         elif ch == 2:
             print("*"*40)
             product.addProduct()
+        elif ch == 3:
+            product.editQuantity()
         elif ch == 4:
             product.deleteProduct()
         elif ch == 5:
             product.getList()
         elif ch == 6:
             product.searchProduct()
+        elif ch == 7:
+            dicounts.addDiscount()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")

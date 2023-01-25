@@ -9,22 +9,28 @@ def addProduct():
     p_name = input('Product name: ')
     p_quantity = input('Quantity: ')
     p_basePrice = input('Base price: ')
-    p_supplier = str(input('Supplier: '))
+    p_supplier = input('Supplier: ')
 
     try:
         conn = db.connect()
         cur = db.cursor(conn)
 
-        print("Add Product ...")
-        cur.execute("""
-            INSERT INTO product (p_name, p_quantity, p_basePrice, p_supplier)
-            VALUES (%s, %s, %s, %s);
-            """,
-            (str(p_name), int(p_quantity), int(p_basePrice), p_supplier)
-        )
-        cur.close()
-        conn.commit()
-        print("New product is added.")
+        cur.execute(f"SELECT name FROM supplier WHERE name = '{p_supplier}'")
+        supplier = cur.fetchone()
+
+        if supplier:
+            print("Add Product ...")
+            cur.execute("""
+                INSERT INTO product (p_name, p_quantity, p_basePrice, p_supplier)
+                VALUES (%s, %s, %s, %s);
+                """,
+                (str(p_name), int(p_quantity), int(p_basePrice), str(p_supplier))
+            )
+            cur.close()
+            conn.commit()
+            print("New product is added.")
+        else:
+            print('Supplier not found, list product to find out the supplier names')
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to add a product !!! ---")
@@ -119,4 +125,27 @@ def deleteProduct():
         print("*"*40)
         print("--- !!! Failed to delete the product !!! ---")
         print(error)
-        
+
+
+def editQuantity():
+    print("\n")
+    print("*"*40)
+    print("Edit the quantity of a product!")
+    print("*"*40)
+
+    pId = int(input("Set product code/Id: "))
+    pQ = int (input("Edit the quantity of a product: "))
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute(f"UPDATE product SET p_quantity = {pQ} WHERE p_code = {pId}")
+
+        cur.close()
+        conn.commit()
+        print("Quantity is edited.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to edit the quantity !!! ---")
+        print(error)
