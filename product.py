@@ -140,7 +140,7 @@ def editQuantity():
         conn = db.connect()
         cur = db.cursor(conn)
 
-        cur.execute(f"UPDATE product SET p_quantity = {pQ} WHERE p_code = {pId}")
+        cur.execute(f"UPDATE product SET p_quantity = {pQ} WHERE p_id = {pId}")
 
         cur.close()
         conn.commit()
