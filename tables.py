@@ -33,7 +33,7 @@ def createTables():
             """,
             """
             CREATE TABLE discount(
-                d_id SERIAL INT UNIQUE PRIMARY KEY,
+                d_id SERIAL UNIQUE PRIMARY KEY,
                 d_precent INT NOT NULL,
                 d_name VARCHAR (55) NOT NULL,
                 d_startDate INT NOT NULL,

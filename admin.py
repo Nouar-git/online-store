@@ -33,6 +33,8 @@ def start():
             product.searchProduct()
         elif ch == 7:
             dicounts.addDiscount()
+        elif ch == 8:
+            dicounts.seeHistory()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")
@@ -52,6 +54,7 @@ def addSupplier ():
         conn = db.connect()
         cur = db.cursor(conn)
 
+        print("\n")
         print("Add new Supplier ...")
         cur.execute("""
             INSERT INTO Supplier (name, address, postnr, phonenumber, city, country)
@@ -61,7 +64,7 @@ def addSupplier ():
         )
         cur.close()
         conn.commit()
-        print("New customer registered.")
+        print("New Supplier registered.")
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to add new supplier !!! ---")
