@@ -6,11 +6,11 @@ def addProduct():
     print("Add Product")
     print("*"*40)
     
-    p_name = input(str('Product name: '))
-    p_quantity = input(int('Quantity: '))
-    p_basePrice = input(int('Base price: '))
-    p_supplier = input(str('Supplier: '))
-    p_discount = input(int('Discount: '))
+    p_name = str(input('Product name: '))
+    p_quantity = int(input('Quantity: '))
+    p_basePrice = int(input('Base price: '))
+    p_supplier = str(input('Supplier name: '))
+    p_discount = int(input('Discount id: '))
 
     try:
         conn = db.connect()
@@ -26,31 +26,27 @@ def addProduct():
             cur.execute(f"SELECT d_id FROM discount WHERE d_id = '{p_discount}'")
             discount = cur.fetchone()
 
-        if supplier:
-            print("Add Product ...")
+        print("Add Product ...")
+        if supplier and discount:
+            cur.execute("""
+                INSERT INTO product (p_name, p_quantity, p_basePrice, p_supplier, p_discount)
+                VALUES (%s, %s, %s, %s, %s);
+                """,
+                (p_name, p_quantity, p_basePrice, p_supplier, p_discount)
+            )
+        elif supplier:
             cur.execute("""
                 INSERT INTO product (p_name, p_quantity, p_basePrice, p_supplier)
                 VALUES (%s, %s, %s, %s);
                 """,
-                (str(p_name), int(p_quantity), int(p_basePrice), str(p_supplier))
+                (p_name, p_quantity, p_basePrice, p_supplier)
             )
-            cur.close()
-            conn.commit()
-            print("New product is added.")
         else:
-            print('Supplier not found, list product to find out the supplier names')
-        
-        if supplier and discount:
-            cur.execute("""
-                INSERT INTO product (p_discount)
-                VALUES (%s);
-                """,
-                (int(p_discount))
-            )
-            cur.close()
-            conn.commit()
-        else:
-            print("Discount not found")
+            print('Supplier or discount not found, list to find out the name or id.')
+
+        cur.close()
+        conn.commit()
+        print("New product is added.")
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to add a product !!! ---")
@@ -136,7 +132,7 @@ def deleteProduct():
         conn = db.connect()
         cur = db.cursor(conn)
 
-        cur.execute(f"DELETE FROM product WHERE p_code = {pId}")
+        cur.execute(f"DELETE FROM product WHERE p_id = {pId}")
 
         cur.close()
         conn.commit()
