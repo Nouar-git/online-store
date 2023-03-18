@@ -6,17 +6,25 @@ def addProduct():
     print("Add Product")
     print("*"*40)
     
-    p_name = input('Product name: ')
-    p_quantity = input('Quantity: ')
-    p_basePrice = input('Base price: ')
-    p_supplier = input('Supplier: ')
+    p_name = input(str('Product name: '))
+    p_quantity = input(int('Quantity: '))
+    p_basePrice = input(int('Base price: '))
+    p_supplier = input(str('Supplier: '))
+    p_discount = input(int('Discount: '))
 
     try:
         conn = db.connect()
         cur = db.cursor(conn)
 
-        cur.execute(f"SELECT name FROM supplier WHERE name = '{p_supplier}'")
-        supplier = cur.fetchone()
+        supplier = None
+        if p_supplier:
+            cur.execute(f"SELECT name FROM supplier WHERE name = '{p_supplier}'")
+            supplier = cur.fetchone()
+
+        discount = None
+        if p_discount:
+            cur.execute(f"SELECT d_id FROM discount WHERE d_id = '{p_discount}'")
+            discount = cur.fetchone()
 
         if supplier:
             print("Add Product ...")
@@ -31,6 +39,18 @@ def addProduct():
             print("New product is added.")
         else:
             print('Supplier not found, list product to find out the supplier names')
+        
+        if supplier and discount:
+            cur.execute("""
+                INSERT INTO product (p_discount)
+                VALUES (%s);
+                """,
+                (int(p_discount))
+            )
+            cur.close()
+            conn.commit()
+        else:
+            print("Discount not found")
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to add a product !!! ---")
