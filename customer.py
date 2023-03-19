@@ -1,4 +1,6 @@
 import dbConnect as db
+import product
+from datetime import datetime
 
 def start():
     while 1:
@@ -7,13 +9,25 @@ def start():
         print("Customer page")
         print("*"*40)
 
-        print("1.Sign up")
-        print("2.Login")
+        print("1. Sign up")
+        print("2. Login")
+        print("3. See a list of all available products")
+        print("4. Search for aproduct")
+        print("5. Add products to the shopping list")
+        print("6. See the shopping list's total price")
+        print("7. See the orders list")
+        print("8. Delete an order")
         ch = int(input("Enter your choice: "))
         if ch == 1:
             signup()
         elif ch == 2:
             login()
+        elif ch == 3:
+            getListProducts()
+        elif ch == 4:
+            product.searchProduct()
+        elif ch == 5:
+            addProductByCustomer()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")
@@ -70,4 +84,71 @@ def login():
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to login !!! ---")
+        print(error)
+
+def getListProducts():
+    print("\n")
+    print("*"*40)
+    print("List of all products")
+    print("*"*40)
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute("SELECT * FROM product")
+        data = cur.fetchall()
+
+        if data:
+            print ("{:<8} {:<20} {:<15} {:<15} {:<20} {:<20}".format('Id','Name','Quantity','Price','Supplier', 'Discount'))
+            print("-"*92)
+            for d in data:
+                if d[5]:
+                    print ("{:<8} {:<20} {:<15} {:<15} {:<20} {:<20}".format(d[0], d[1], d[2], d[3], d[4], d[5]))
+                else:
+                    print ("{:<8} {:<20} {:<15} {:<15} {:<20} {:<20}".format(d[0], d[1], d[2], d[3], d[4], 'No discount'))
+            return data
+        else:
+            print("--- !!! Failed to get product list !!! ---")
+
+        cur.close()
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to get a list of products !!! ---")
+        print(error)
+
+def addProductByCustomer():
+    print("\n")
+    print("*"*40)
+    print("Add Product to the shopping list")
+    print("*"*40)
+    
+    p_id = int(input('Product id: '))
+    p_quantity = int(input('Quantity: '))
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute(f"SELECT p_id FROM product WHERE product.p_id = '{p_id}' ")
+        pId = cur.fetchone()
+
+        now = datetime.now()
+        dt = now.strftime("%Y-%m-%d %H:%M")
+
+        if pId:
+            cur.execute("""
+                INSERT INTO orders (o_product, o_quantity, o_date)
+                VALUES (%s, %s, %s);
+                """,
+                (pId, p_quantity, dt)
+            )
+            cur.close()
+            conn.commit()
+            print("Added new order.")
+        else:
+            print("Product id not found.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to add a order !!! ---")
         print(error)

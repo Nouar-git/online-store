@@ -32,7 +32,7 @@ def createTables():
             )
             """,
             """
-            CREATE TABLE discount(
+            CREATE TABLE IF NOT EXISTS discount(
                 d_id SERIAL UNIQUE PRIMARY KEY,
                 d_precent INT NOT NULL,
                 d_name VARCHAR (55) NOT NULL,
@@ -52,6 +52,15 @@ def createTables():
                 FOREIGN KEY (p_discount) REFERENCES discount (d_id)
             )
             """,
+            """
+            CREATE TABLE IF NOT EXISTS orders (
+                o_id SERIAL UNIQUE PRIMARY KEY,
+                o_product INT NOT NULL,
+                o_quantity INT NOT NULL,
+                o_date VARCHAR (55) NOT NULL,
+                FOREIGN KEY (o_product) REFERENCES product (p_id)
+            )
+            """
         )
         
         for table in tables:
