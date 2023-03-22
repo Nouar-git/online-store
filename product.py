@@ -10,7 +10,7 @@ def addProduct():
     p_quantity = int(input('Quantity: '))
     p_basePrice = int(input('Base price: '))
     p_supplier = str(input('Supplier name: '))
-    p_discount = int(input('Discount id: '))
+    p_discount = input('Discount id: ')
 
     try:
         conn = db.connect()

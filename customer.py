@@ -2,6 +2,7 @@ import dbConnect as db
 import product
 from datetime import datetime
 
+
 def start():
     while 1:
         print("\n")
@@ -14,7 +15,7 @@ def start():
         print("3. See a list of all available products")
         print("4. Search for aproduct")
         print("5. Add products to the shopping list")
-        print("6. See the shopping list's total price")
+        print("6. See the shopping list's total price and pay")
         print("7. See the orders list")
         print("8. Delete an order")
         ch = int(input("Enter your choice: "))
@@ -28,6 +29,8 @@ def start():
             product.searchProduct()
         elif ch == 5:
             addProductByCustomer()
+        elif ch == 6:
+            payPrice()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")
@@ -138,10 +141,10 @@ def addProductByCustomer():
 
         if pId:
             cur.execute("""
-                INSERT INTO orders (o_product, o_quantity, o_date)
-                VALUES (%s, %s, %s);
+                INSERT INTO orders (o_product, o_quantity, o_customer, o_date)
+                VALUES (%s, %s, %s, %s);
                 """,
-                (pId, p_quantity, dt)
+                (pId, p_quantity,1, dt)
             )
             cur.close()
             conn.commit()
@@ -151,4 +154,35 @@ def addProductByCustomer():
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to add a order !!! ---")
+        print(error)
+
+
+
+
+def payPrice ():
+    print("\n")
+    print("*"*40)
+    print("Total payment")
+    print("*"*40)
+
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+        
+        cur.execute("SELECT o_product FROM orders")
+        p1 = cur.fetchone()
+
+        cur.execute(f"SELECT p_basePrice FROM product WHERE p_id = {p1[0]}")
+        price = cur.fetchone()
+
+        if price:
+            pay = input(f"Total price = {price[0]}. To pay Enter 1: ")
+        else:
+            print("--- !!! price not found !!! ---")
+
+        cur.close()
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to see final payment !!! ---")
         print(error)

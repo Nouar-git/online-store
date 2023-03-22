@@ -57,6 +57,7 @@ def createTables():
                 o_id SERIAL UNIQUE PRIMARY KEY,
                 o_product INT NOT NULL,
                 o_quantity INT NOT NULL,
+                o_customer INT NOT NULL,
                 o_date VARCHAR (55) NOT NULL,
                 FOREIGN KEY (o_product) REFERENCES product (p_id)
             )
