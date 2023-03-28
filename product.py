@@ -94,7 +94,7 @@ def searchProduct():
         cur = db.cursor(conn)
 
         if sq.isdigit():
-            cur.execute(f"SELECT * FROM product WHERE p_code = {sq}")
+            cur.execute(f"SELECT * FROM product WHERE p_id = {sq}")
         else:
             cur.execute("""
                 SELECT * FROM product

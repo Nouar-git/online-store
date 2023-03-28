@@ -16,10 +16,10 @@ def addDiscount():
         cur = db.cursor(conn)
 
         cur.execute("""
-            INSERT INTO discount (d_precent, d_name, d_startDate, d_endDate)
+            INSERT INTO discount (d_name,d_precent, d_startDate, d_endDate)
             VALUES (%s, %s, %s, %s);
             """,
-            (d_precent, d_name, d_startDate, d_endDate)
+            (d_name, d_precent, d_startDate, d_endDate)
         )
         cur.close()
         conn.commit()
@@ -30,11 +30,40 @@ def addDiscount():
         print(error)
 
 
+def addedDiscounts():
+    print("\n")
+    print("*"*40)
+    print("Discounts' History")
+    print("*"*40)
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute("SELECT * From discount")
+        data = cur.fetchall()
+
+        if data:
+            print ("{:<15} {:<15} {:<15} {:<20} {:<15}".format('Discount id', 'Discount %', 'Discount name', 'D_startDate', 'D_endDate'))
+            print("-"*100)
+            for d in data:
+                print ("{:<15} {:<15} {:<15} {:<20} {:<15} ".format(d[0], d[1], d[2], d[3], d[4]))  
+        else:
+            print("--- !!! Failed to get discount list !!! ---")
+
+        cur.close()
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to get a list of discounts !!! ---")
+        print(error)
+
+
+
 def getDiscountPrice(price, discount):
     sum = price * (100 - discount) / 100
     return sum
 
-def seeHistory ():
+def seeHistory():
     print("\n")
     print("*"*40)
     print("Discounts' History")
@@ -52,13 +81,11 @@ def seeHistory ():
         data = cur.fetchall()
 
         if data:
-            print ("{:<15} {:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<13} {:<15}".format('Product id', 'Product name', 'BasePrice', 'Discounted prise', 'Discount id', 'Discount name', 'Discount %', 'D_startDate', 'D_endDate'))
-            print("-"*140)
+            print ("{:<10} {:<15} {:<13} {:<16} {:<15} {:<15} {:<13} {:<13} {:<15}".format('Product id', 'Product name', 'BasePrice', 'Discounted prise', 'Discount id', 'Discount name', 'Discount %', 'D_startDate', 'D_endDate'))
+            print("-"*130)
             for d in data:
                 discounPrise = getDiscountPrice(d[2], d[5])
-                print ("{:<15} {:<15} {:<15} {:<20} {:<15} {:<15} {:<15} {:<13} {:<15}".format(d[0], d[1], d[2], discounPrise, d[3], d[4], d[5], d[6], d[7]))
-                
-            return data
+                print ("{:<10} {:<15} {:<13} {:<16} {:<15} {:<15} {:<13} {:<13} {:<15}".format(d[0], d[1], d[2], discounPrise, d[3], d[4], d[5], d[6], d[7]))  
         else:
             print("--- !!! Failed to get discount list !!! ---")
 

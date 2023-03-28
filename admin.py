@@ -17,6 +17,7 @@ def start():
         print("6. Search a product")
         print("7. Add a list of possible discounts")
         print("8. See discounts history")
+        print("9. See discount history for discounted products")
         ch = int(input("Enter your choice: "))
         if ch == 1:
             addSupplier()
@@ -34,6 +35,8 @@ def start():
         elif ch == 7:
             dicounts.addDiscount()
         elif ch == 8:
+            dicounts.addedDiscounts()
+        elif ch == 9:
             dicounts.seeHistory()
         else:
             print("*"*40)
