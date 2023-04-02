@@ -31,6 +31,10 @@ def start():
             addProductByCustomer()
         elif ch == 6:
             payPrice()
+        elif ch == 7:
+            seeOrder()
+        elif ch == 8:
+            deleteOrder()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")
@@ -148,6 +152,7 @@ def addProductByCustomer():
             )
             cur.close()
             conn.commit()
+            product.autoEditQuantity(p_id, p_quantity, 'de')
             print("Added new order.")
         else:
             print("Product id not found.")
@@ -155,8 +160,6 @@ def addProductByCustomer():
         print("*"*40)
         print("--- !!! Failed to add a order !!! ---")
         print(error)
-
-
 
 
 def payPrice ():
@@ -185,4 +188,66 @@ def payPrice ():
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to see final payment !!! ---")
+        print(error)
+
+
+def seeOrder ():
+    print("\n")
+    print("*"*40)
+    print("Order list")
+    print("*"*40)
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute("SELECT * FROM orders")
+        data = cur.fetchall()
+
+        if data:
+            print ("{:<8} {:<20} {:<15} {:<15}".format('Id','Name','Quantity','Price'))
+            print("-"*92)
+            for d in data:
+                print ("{:<8} {:<20} {:<15} {:<15}".format(d[0], d[1], d[2], d[3]))
+            return data
+        else:
+            print("--- !!! Failed to get product list !!! ---")
+
+        cur.close()
+        product.autoEditOrder(oId, 'in')
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to get a list of products !!! ---")
+        print(error)
+
+
+def deleteOrder():
+    print("\n")
+    print("*"*40)
+    print("Delete the order!")
+    print("*"*40)
+
+    oId = int(input("Set order code/Id: "))
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+        
+        cur.execute(f"SELECT o_quantity FROM orders WHERE o_id = {oId}")
+        quantity = cur.fetchone()
+        quantity = quantity[0]
+
+        cur.execute(f"SELECT o_product FROM orders WHERE o_id = {oId}")
+        pId = cur.fetchone()
+        pId = pId[0]
+
+        cur.execute(f"DELETE FROM orders WHERE o_id = {oId}")
+
+        cur.close()
+        conn.commit()
+        product.autoEditQuantity(pId, quantity, 'in')
+        print("order is deleted.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to delete the product !!! ---")
         print(error)

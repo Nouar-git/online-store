@@ -142,7 +142,6 @@ def deleteProduct():
         print("--- !!! Failed to delete the product !!! ---")
         print(error)
 
-
 def editQuantity():
     print("\n")
     print("*"*40)
@@ -164,4 +163,72 @@ def editQuantity():
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to edit the quantity !!! ---")
+        print(error)
+
+def autoEditQuantity (productId, pq, deOrIn):
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute(f"SELECT p_quantity FROM product WHERE p_id =  '{productId}'")
+        quantity = cur.fetchone()
+
+        result = 0
+        if quantity:
+            if deOrIn == 'de':
+                result = quantity[0] - pq
+            else:
+                result = quantity[0] + pq
+            
+            try:
+                conn = db.connect()
+                cur = db.cursor(conn)
+
+                cur.execute(f"UPDATE product SET p_quantity = {result} WHERE p_id = {productId}")
+                conn.commit()
+
+                print("Quantity is edited.")
+            except (Exception, db.psycopg2.DatabaseError) as error:
+                print("*"*40)
+                print("--- !!! Failed to edite the quantity 2 !!! ---")
+                print(error)
+
+        cur.close()
+        print("Quantity is edited.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to edite the quantity 1 !!! ---")
+        print(error)
+
+def autoEditOrder (orderId, de):
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute(f"SELECT o_quantity FROM orders WHERE o_id = '{orderId}'")
+        order = cur.fetchone()
+
+        result = 0
+        if order:
+            if de == 'de':
+                result = order[0] - 1
+            
+            try:
+                conn = db.connect()
+                cur = db.cursor(conn)
+
+                cur.execute(f"UPDATE orders SET o_quantity = {result} WHERE o_id = '{orderId}'")
+                conn.commit()
+
+                print("Quantity is edited.")
+            except (Exception, db.psycopg2.DatabaseError) as error:
+                print("*"*40)
+                print("--- !!! Failed to edite the quantity 2 !!! ---")
+                print(error)
+
+        cur.close()
+        print("Quantity is edited.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to edite the quantity 1 !!! ---")
         print(error)
