@@ -246,12 +246,18 @@ def deleteOrder():
         pId = cur.fetchone()
         pId = pId[0]
 
-        cur.execute(f"DELETE FROM orders WHERE o_id = {oId}")
+        cur.execute(f"SELECT o_confirmed FROM orders WHERE o_id = {oId}")
+        confirmed = cur.fetchone()
+        confirmed = confirmed[0]
 
-        cur.close()
-        conn.commit()
-        product.autoEditQuantity(pId, quantity, 'in')
-        print("order is deleted.")
+        if confirmed == 'False':
+            cur.execute(f"DELETE FROM orders WHERE o_id = {oId}")
+            cur.close()
+            conn.commit()
+            product.autoEditQuantity(pId, quantity, 'in')
+            print("order is deleted.")
+        else:
+            print("Order is Confirmed and can not be deleted.")
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to delete the product !!! ---")

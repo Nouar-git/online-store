@@ -186,8 +186,6 @@ def autoEditQuantity (productId, pq, deOrIn):
 
                 cur.execute(f"UPDATE product SET p_quantity = {result} WHERE p_id = {productId}")
                 conn.commit()
-
-                print("Quantity is edited.")
             except (Exception, db.psycopg2.DatabaseError) as error:
                 print("*"*40)
                 print("--- !!! Failed to edite the quantity 2 !!! ---")
