@@ -21,6 +21,7 @@ def start():
         print("9. See discount history for discounted products")
         print("10. See a list of all new orders")
         print("11. Confirm order")
+        print("12. See a list of products with maximum orders in each month")
         ch = int(input("Enter your choice: "))
         if ch == 1:
             addSupplier()
@@ -45,6 +46,8 @@ def start():
             product.SeeNewOrders()
         elif ch == 11:
             product.confirmOrder()
+        elif ch == 12:
+            product.listMaximumOrdersInEachMonth()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")

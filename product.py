@@ -1,4 +1,5 @@
 import dbConnect as db
+from datetime import datetime
 
 def addProduct():
     print("\n")
@@ -275,7 +276,7 @@ def confirmOrder():
         conn = db.connect()
         cur = db.cursor(conn)
 
-        cur.execute(f"UPDATE orders SET o_confirmed = 'true' WHERE o_id = {oId}")
+        cur.execute(f"UPDATE orders SET o_confirmed = 'True' WHERE o_id = {oId}")
 
         cur.close()
         conn.commit()
@@ -283,4 +284,35 @@ def confirmOrder():
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to confirm the order !!! ---")
+        print(error)
+
+def listMaximumOrdersInEachMonth():
+    print("\n")
+    print("*"*40)
+    print("List of products with maximum orders in each month!")
+    print("*"*40)
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute("SELECT * FROM orders ORDER BY o_quantity ASC")
+        data = cur.fetchall()
+
+        if data:
+            print ("{:<8} {:<10} {:<15} {:<15}".format('Year','Month','Product Id','Quantity'))
+            print("-"*50)
+            for d in data:
+                if d[4] == 'False':
+                    continue
+                else:
+                    dt = datetime.strptime(d[5], '%Y-%m-%d %H:%M')
+                    print ("{:<8} {:<10} {:<15} {:<15}".format(dt.year, dt.month, d[1], d[2]))
+        else:
+            print("--- !!! Failed to show a list maximum orders !!! ---")
+
+        cur.close()
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to list maximum orders !!! ---")
         print(error)
