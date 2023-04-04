@@ -1,6 +1,7 @@
 import dbConnect as db
 import product
 import dicounts
+import customer
 
 def start():
     while 1:
@@ -18,6 +19,8 @@ def start():
         print("7. Add a list of possible discounts")
         print("8. See discounts history")
         print("9. See discount history for discounted products")
+        print("10. See a list of all new orders")
+        print("11. Confirm order")
         ch = int(input("Enter your choice: "))
         if ch == 1:
             addSupplier()
@@ -38,6 +41,10 @@ def start():
             dicounts.addedDiscounts()
         elif ch == 9:
             dicounts.seeHistory()
+        elif ch == 10:
+            product.SeeNewOrders()
+        elif ch == 11:
+            product.confirmOrder()
         else:
             print("*"*40)
             print("Wrong Choice, try again!")

@@ -58,6 +58,7 @@ def createTables():
                 o_product INT NOT NULL,
                 o_quantity INT NOT NULL,
                 o_customer INT NOT NULL,
+                o_confirmed VARCHAR (50) DEFAULT 'False',
                 o_date VARCHAR (55) NOT NULL,
                 FOREIGN KEY (o_product) REFERENCES product (p_id)
             )

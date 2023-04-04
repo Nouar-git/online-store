@@ -200,6 +200,39 @@ def autoEditQuantity (productId, pq, deOrIn):
         print("--- !!! Failed to edite the quantity 1 !!! ---")
         print(error)
 
+
+def SeeNewOrders ():
+    print("\n")
+    print("*"*40)
+    print("List of all orders")
+    print("*"*40)
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute("SELECT * FROM orders")
+        data = cur.fetchall()
+
+        if data:
+            print ("{:<8} {:<20} {:<15} {:<15} {:<20}".format('Id','productId','Quantity','Price','Confirmed'))
+            print("-"*80)
+            for d in data:
+                cur.execute(f"SELECT p_basePrice FROM product WHERE p_id = {d[1]}")
+                pPrice = cur.fetchone()
+                pPrice = pPrice[0]
+                print ("{:<8} {:<20} {:<15} {:<15} {:<20}".format(d[0], d[1], d[2], pPrice, d[4]))
+                
+            return data
+        else:
+            print("--- !!! Failed to show orders list !!! ---")
+
+        cur.close()
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to get a list of new orders !!! ---")
+        print(error)
+
 def autoEditOrder (orderId, de):
     try:
         conn = db.connect()
@@ -220,15 +253,36 @@ def autoEditOrder (orderId, de):
                 cur.execute(f"UPDATE orders SET o_quantity = {result} WHERE o_id = '{orderId}'")
                 conn.commit()
 
-                print("Quantity is edited.")
             except (Exception, db.psycopg2.DatabaseError) as error:
                 print("*"*40)
-                print("--- !!! Failed to edite the quantity 2 !!! ---")
+                print("--- !!! Failed to edite the quantity2 !!! ---")
                 print(error)
 
         cur.close()
-        print("Quantity is edited.")
     except (Exception, db.psycopg2.DatabaseError) as error:
         print("*"*40)
         print("--- !!! Failed to edite the quantity 1 !!! ---")
+        print(error)
+
+
+def confirmOrder():
+    print("\n")
+    print("*"*40)
+    print("Confirm an order!")
+    print("*"*40)
+
+    oId = int(input("Set order nr/Id: "))
+
+    try:
+        conn = db.connect()
+        cur = db.cursor(conn)
+
+        cur.execute(f"UPDATE orders SET o_confirmed = 'true' WHERE o_id = {oId}")
+
+        cur.close()
+        conn.commit()
+        print("The order is confirmed.")
+    except (Exception, db.psycopg2.DatabaseError) as error:
+        print("*"*40)
+        print("--- !!! Failed to confirm the order !!! ---")
         print(error)

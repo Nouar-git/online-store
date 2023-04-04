@@ -204,11 +204,16 @@ def seeOrder ():
         cur.execute("SELECT * FROM orders")
         data = cur.fetchall()
 
+
         if data:
-            print ("{:<8} {:<20} {:<15} {:<15}".format('Id','Name','Quantity','Price'))
+            print ("{:<8} {:<20} {:<15} {:<15}".format('Id','ProductId','Quantity','Price'))
             print("-"*92)
             for d in data:
-                print ("{:<8} {:<20} {:<15} {:<15}".format(d[0], d[1], d[2], d[3]))
+                cur.execute(f"SELECT p_basePrice FROM product WHERE p_id = {d[1]}")
+                pPrice = cur.fetchone()
+                pPrice = pPrice[0]
+
+                print ("{:<8} {:<20} {:<15} {:<15}".format(d[0], d[1], d[2], pPrice))
             return data
         else:
             print("--- !!! Failed to get product list !!! ---")
